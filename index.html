@@ -1,0 +1,67 @@
+.container {
+	margin: auto;
+	max-width: 600px;
+	padding: 20px;
+	text-align: center;
+}
+
+h1 {
+	font-size: 36px;
+	margin-bottom: 20px;
+}
+
+label {
+	display: block;
+	font-size: 18px;
+	margin-bottom: 10px;
+	text-align: left;
+}
+
+input[type="text"] {
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	font-size: 16px;
+	margin-bottom: 20px;
+	padding: 12px 20px;
+	width: 100%;
+}
+
+button[type="submit"] {
+	background-color: #4CAF50;
+	border: none;
+	border-radius: 4px;
+	color: white;
+	cursor: pointer;
+	font-size: 20px;
+	margin-top: 20px;
+	padding: 12px 20px;
+	width: 100%;
+}
+
+button[type="submit"]:hover {
+	background-color: #3e8e41;
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ancestor Map</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div class="container">
+		<h1>Ancestor Map</h1>
+		<form>
+			<label for="address">Ancestor's Address:</label>
+			<input type="text" id="address" name="address" placeholder="Enter ancestor's address">
+
+			<label for="time-period">Time Period:</label>
+			<input type="text" id="time-period" name="time-period" placeholder="Enter time period">
+
+			<button type="submit">Map It!</button>
+		</form>
+	</div>
+</body>
+</html>
