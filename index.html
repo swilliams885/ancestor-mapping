@@ -1,64 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Ancestor Map</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-<link rel="stylesheet" href="leaflet.css" />
-<script src="leaflet.js"></script>
+	<title>Ancestor Map</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+	<script src="script.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Ancestor Map</h1>
-    <form>
-      <label for="address">Ancestor's Address:</label>
-      <input type="text" id="address" name="address" placeholder="Enter ancestor's address">
+	<div class="container">
+		<h1>Ancestor Map</h1>
+		<form onsubmit="return false">
+			<label for="address">Ancestor's Address:</label>
+			<input type="text" id="address" name="address" placeholder="Enter ancestor's address">
 
-      <label for="time-period">Time Period:</label>
-      <input type="text" id="time-period" name="time-period" placeholder="Enter time period">
+			<label for="date">Date:</label>
+			<input type="text" id="date" name="date" placeholder="Enter date">
 
-      <button type="button" onclick="search()">Map It!</button>
-    </form>
-  </div>
-  <div id="map"></div>
-  <script>
-    // Initialize the map
-    var map = L.map('map').setView([0, 0], 13);
-
-    // Add the OpenStreetMap tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-      maxZoom: 19
-    }).addTo(map);
-
-    // Function to geocode the address entered by the user
-    function search() {
-      var address = document.getElementById('address').value;
-      var timePeriod = document.getElementById('time-period').value;
-      var url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(address) + '&format=json&addressdetails=1&limit=1';
-
-      // Use fetch API to send a GET request to the OpenStreetMap API
-      fetch(url)
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(data) {
-          // Get the latitude and longitude of the geocoded address
-          var lat = data[0].lat;
-          var lon = data[0].lon;
-
-          // Add a marker to the map at the geocoded address location
-          var marker = L.marker([lat, lon]).addTo(map);
-
-          // Add a popup to the marker showing the address and time period
-          marker.bindPopup('<b>' + address + '</b><br>' + timePeriod).openPopup();
-
-          // Pan to the marker location
-          map.panTo([lat, lon]);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    }
-  </script>
+			<button type="button" onclick="geocode()">Map It!</button>
+		</form>
+	</div>
+	<div id="map"></div>
 </body>
 </html>
