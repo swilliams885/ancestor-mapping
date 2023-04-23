@@ -1,26 +1,52 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Ancestor Map</title>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://unpkg.com; script-src 'self' https://unpkg.com">
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
-  <script src="script.js"></script>
-</head>
-<body>
-  <div class="container">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ancestor Map</title>
+    <style>
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
     <h1>Ancestor Map</h1>
-    <form>
+    <form id="form">
       <label for="address">Ancestor's Address:</label>
       <input type="text" id="address" name="address" placeholder="Enter ancestor's address">
-
-      <label for="time-period">Time Period:</label>
-      <input type="text" id="time-period" name="time-period" placeholder="Enter time period">
-
+      
+      <label for="date">Date:</label>
+      <input type="date" id="date" name="date" placeholder="Enter date">
+      
       <button type="submit">Map It!</button>
     </form>
-  </div>
-  <div id="map"></div>
-</body>
+    <div id="map"></div>
+    <script>
+      const form = document.querySelector('#form');
+      const addressInput = document.querySelector('#address');
+      const dateInput = document.querySelector('#date');
+      const mapDiv = document.querySelector('#map');
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const address = addressInput.value;
+        const date = dateInput.value;
+        const url = `https://nominatim.openstreetmap.org/search?q=${address}&format=json&addressdetails=1&limit=1`;
+        try {
+          const response = await fetch(url);
+          const [result] = await response.json();
+          const lat = result.lat;
+          const lon = result.lon;
+          const map = L.map(mapDiv).setView([lat, lon], 13);
+          const marker = L.marker([lat, lon]).addTo(map);
+          marker.bindPopup(`<b>${date}</b><br>${address}`).openPopup();
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    </script>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+  </body>
 </html>
