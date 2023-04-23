@@ -1,38 +1,39 @@
-const API_KEY = "LUZp4SngR0SZU5XdmpfVjgUciLdZjDti";
-const geocodeURL = "https://nominatim.openstreetmap.org/search";
+// Initialize the map
+var map = L.map('map').setView([0, 0], 13);
 
-const addressInput = document.getElementById("address");
-const dateInput = document.getElementById("date");
-const submitButton = document.getElementById("submit");
-const mapDiv = document.getElementById("map");
+// Add the OpenStreetMap tile layer
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+	maxZoom: 18
+}).addTo(map);
 
-submitButton.addEventListener("click", e => {
-  e.preventDefault();
-  const address = addressInput.value;
-  const date = dateInput.value;
-  if (address && date) {
-    const params = {
-      q: address,
-      format: "json",
-      limit: 1,
-      addressdetails: 1
-    };
-    axios.get(geocodeURL, { params })
-      .then(response => {
-        const { lat, lon, display_name } = response.data[0];
-        const map = L.map(mapDiv).setView([lat, lon], 15);
-        const marker = L.marker([lat, lon]).addTo(map);
-        marker.bindPopup(`<b>${display_name}</b><br>${date}`).openPopup();
-        L.tileLayer(`https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?apikey=${API_KEY}`, {
-          attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-          maxZoom: 18,
-        }).addTo(map);
-      })
-      .catch(error => {
-        console.error(error);
-        alert("An error occurred while geocoding the address. Please try again.");
-      });
-  } else {
-    alert("Please enter both an address and a date.");
-  }
-});
+function geocode() {
+	// Get the user input values
+	var address = document.getElementById('address').value;
+	var date = document.getElementById('date').value;
+
+	// Geocode the address using OpenStreetMap API
+	axios.get('https://nominatim.openstreetmap.org/search', {
+		params: {
+			format: 'json',
+			q: address,
+			limit: 1
+		}
+	}).then(function(response) {
+		if (response.data.length > 0) {
+			// Get the latitude and longitude of the geocoded address
+			var lat = response.data[0].lat;
+			var lon = response.data[0].lon;
+
+			// Add a marker to the map at the geocoded address with the submitted date as the label
+			L.marker([lat, lon]).addTo(map).bindPopup(date).openPopup();
+
+			// Zoom the map to the location of the marker
+			map.setView([lat, lon], 13);
+		} else {
+			alert('Unable to geocode address');
+		}
+	}).catch(function(error) {
+		alert('Unable to geocode address');
+	});
+}
