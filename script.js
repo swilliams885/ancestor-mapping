@@ -1,48 +1,59 @@
-// Replace YOUR_API_KEY with your actual API key
-const API_KEY = "LUZp4SngR0SZU5XdmpfVjgUciLdZjDti";
+// Wait for the page to load before running the JavaScript code
+document.addEventListener("DOMContentLoaded", function(event) {
+  // Get the form and map elements from the HTML
+  const form = document.querySelector("form");
+  const mapContainer = document.getElementById("map");
 
-// Get references to the input fields and submit button
-const addressInput = document.getElementById("address");
-const timePeriodInput = document.getElementById("time-period");
-const submitButton = document.querySelector("button[type='submit']");
+  // Define the default coordinates and zoom level
+  const defaultCoordinates = [0, 0];
+  const defaultZoomLevel = 2;
 
-// Add event listener to the submit button
-submitButton.addEventListener("click", (event) => {
+  // Initialize the map with the default coordinates and zoom level
+  const map = L.map(mapContainer).setView(defaultCoordinates, defaultZoomLevel);
+
+  // Add the tile layer to the map using OpenStreetMap tiles
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+    maxZoom: 18,
+    tileSize: 512,
+    zoomOffset: -1,
+  }).addTo(map);
+
+  // Handle form submission
+  form.addEventListener("submit", function(event) {
+    // Prevent the default form submission behavior
     event.preventDefault();
 
-    // Get the user input values
-    const address = addressInput.value;
-    const timePeriod = timePeriodInput.value;
+    // Get the address and time period from the form
+    const address = document.getElementById("address").value;
+    const timePeriod = document.getElementById("time-period").value;
 
-    // Build the API URL with the user input values
-    const apiUrl = `https://nominatim.openstreetmap.org/search?q=${address}&format=json&limit=1&addressdetails=1`;
+    // Use OpenStreetMap Nominatim API to geocode the address
+    const apiKey = "LUZp4SngR0SZU5XdmpfVjgUciLdZjDti";
+    const url = `https://nominatim.openstreetmap.org/search?q=${address}&format=json&limit=1&key=${apiKey}`;
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        // Get the latitude and longitude from the geocoding result
+        const latitude = data[0].lat;
+        const longitude = data[0].lon;
 
-    // Call the API with fetch
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            // Get the latitude and longitude from the API response
-            const lat = data[0].lat;
-            const lon = data[0].lon;
+        // Set the map center to the geocoded coordinates and zoom level
+        map.setView([latitude, longitude], 12);
 
-            // Call the function to display the map with the latitude and longitude
-            displayMap(lat, lon);
-        })
-        .catch(error => console.error(error));
+        // Add a marker to the map at the geocoded coordinates
+        const marker = L.marker([latitude, longitude]).addTo(map);
+
+        // Add a popup to the marker with the ancestor's address and time period
+        const popupContent = `
+          <p><b>Ancestor's Address:</b> ${address}</p>
+          <p><b>Time Period:</b> ${timePeriod}</p>
+        `;
+        marker.bindPopup(popupContent).openPopup();
+      })
+      .catch(error => {
+        console.log(error);
+        alert("There was an error geocoding the address.");
+      });
+  });
 });
-
-function displayMap(latitude, longitude) {
-    // Create a Leaflet map instance
-    const map = L.map("map").setView([latitude, longitude], 13);
-
-    // Add the OpenStreetMap tile layer
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-            '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 18,
-    }).addTo(map);
-
-    // Add a marker for the geocoded location
-    L.marker([latitude, longitude]).addTo(map);
-}
