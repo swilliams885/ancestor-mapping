@@ -1,39 +1,45 @@
-// Initialize the map
-var map = L.map('map').setView([0, 0], 13);
+// Get references to HTML elements
+const addressInput = document.getElementById('address');
+const dateInput = document.getElementById('date');
+const mapContainer = document.getElementById('map');
 
-// Add the OpenStreetMap tile layer
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-	maxZoom: 18
-}).addTo(map);
+// Initialize map
+const map = L.map(mapContainer).setView([51.505, -0.09], 13);
 
-function geocode() {
-	// Get the user input values
-	var address = document.getElementById('address').value;
-	var date = document.getElementById('date').value;
+// Create tile layer from OpenStreetMap
+const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+  maxZoom: 18
+});
 
-	// Geocode the address using OpenStreetMap API
-	axios.get('https://nominatim.openstreetmap.org/search', {
-		params: {
-			format: 'json',
-			q: address,
-			limit: 1
-		}
-	}).then(function(response) {
-		if (response.data.length > 0) {
-			// Get the latitude and longitude of the geocoded address
-			var lat = response.data[0].lat;
-			var lon = response.data[0].lon;
+// Add tile layer to map
+tileLayer.addTo(map);
 
-			// Add a marker to the map at the geocoded address with the submitted date as the label
-			L.marker([lat, lon]).addTo(map).bindPopup(date).openPopup();
+// Handle form submission
+function handleFormSubmit(event) {
+  event.preventDefault();
 
-			// Zoom the map to the location of the marker
-			map.setView([lat, lon], 13);
-		} else {
-			alert('Unable to geocode address');
-		}
-	}).catch(function(error) {
-		alert('Unable to geocode address');
-	});
+  // Get user input values
+  const address = addressInput.value;
+  const date = dateInput.value;
+
+  // Geocode the address using OpenStreetMap API
+  axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${address}&limit=1`)
+    .then(response => {
+      // Get latitude and longitude from response
+      const latitude = response.data[0].lat;
+      const longitude = response.data[0].lon;
+
+      // Create marker with geocoded location and date label
+      const marker = L.marker([latitude, longitude]).addTo(map);
+      marker.bindPopup(`Ancestor lived here on ${date}`).openPopup();
+
+      // Set map view to geocoded location
+      map.setView([latitude, longitude], 13);
+    })
+    .catch(error => console.error(error));
 }
+
+// Attach form submission handler
+const form = document.querySelector('form');
+form.addEventListener('submit', handleFormSubmit);
