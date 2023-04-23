@@ -1,31 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Ancestor Map</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+	<title>Ancestor Map</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="script.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Ancestor Map</h1>
-        <form>
-            <label for="address">Ancestor's Address:</label>
-            <input type="text" id="address" name="address" placeholder="Enter ancestor's address">
+	<div class="container">
+		<h1>Ancestor Map</h1>
+		<form>
+			<label for="address">Ancestor's Address:</label>
+			<input type="text" id="address" name="address" placeholder="Enter ancestor's address">
 
-            <label for="time-period">Time Period:</label>
-            <input type="text" id="time-period" name="time-period" placeholder="Enter time period">
+			<label for="time-period">Time Period:</label>
+			<input type="text" id="time-period" name="time-period" placeholder="Enter time period">
 
-            <button type="submit">Map It!</button>
-        </form>
-
-        <!-- Add the map container with id="map" -->
-        <div id="map"></div>
-    </div>
-
-    <!-- Add the Leaflet CSS and JavaScript files -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" integrity="sha512-2R+uK7yJl69xuIxI3nqK51+VB+tVnMgkAlJjGwj+MZ1sYyDQ2J/J+fT9XGKy6HufU18fp2ZzgFZGvpfhv08Jw==" crossorigin="anonymous" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js" integrity="sha512-jN4yPK+4d4JX2tR8WtjQzGMBJNyxnho+98HzWfY8czORrbjOncJx/+vSZXWUp1nZtEJZSjKq3BkWYdd5CtP4fQ==" crossorigin="anonymous"></script>
-
-    <!-- Add the JavaScript code to display the map -->
-    <script src="script.js"></script>
+			<button type="submit">Map It!</button>
+		</form>
+	</div>
+	<div id="map"></div>
 </body>
 </html>
