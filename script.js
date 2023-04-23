@@ -1,45 +1,31 @@
-// Get references to HTML elements
-const addressInput = document.getElementById('address');
-const dateInput = document.getElementById('date');
-const mapContainer = document.getElementById('map');
+window.onload = function() {
+  const form = document.querySelector('form');
+  const addressInput = document.querySelector('#address');
+  const dateInput = document.querySelector('#date');
+  const mapDiv = document.querySelector('#map');
 
-// Initialize map
-const map = L.map(mapContainer).setView([51.505, -0.09], 13);
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
 
-// Create tile layer from OpenStreetMap
-const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-  maxZoom: 18
-});
+    const address = addressInput.value;
+    const date = dateInput.value;
 
-// Add tile layer to map
-tileLayer.addTo(map);
+    const url = `https://nominatim.openstreetmap.org/search?q=${address}&format=json`;
 
-// Handle form submission
-function handleFormSubmit(event) {
-  event.preventDefault();
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const lat = data[0].lat;
+        const lon = data[0].lon;
 
-  // Get user input values
-  const address = addressInput.value;
-  const date = dateInput.value;
+        const map = L.map(mapDiv).setView([lat, lon], 13);
 
-  // Geocode the address using OpenStreetMap API
-  axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${address}&limit=1`)
-    .then(response => {
-      // Get latitude and longitude from response
-      const latitude = response.data[0].lat;
-      const longitude = response.data[0].lon;
+        const marker = L.marker([lat, lon]).addTo(map);
 
-      // Create marker with geocoded location and date label
-      const marker = L.marker([latitude, longitude]).addTo(map);
-      marker.bindPopup(`Ancestor lived here on ${date}`).openPopup();
-
-      // Set map view to geocoded location
-      map.setView([latitude, longitude], 13);
-    })
-    .catch(error => console.error(error));
-}
-
-// Attach form submission handler
-const form = document.querySelector('form');
-form.addEventListener('submit', handleFormSubmit);
+        marker.bindPopup(`<b>${address}</b><br>${date}`).openPopup();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  });
+};
