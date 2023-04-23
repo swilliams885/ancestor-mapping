@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Ancestor Map</title>
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-	<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-	<script src="script.js"></script>
+  <title>Ancestor Map</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="script.js"></script>
 </head>
 <body>
-	<div class="container">
-		<h1>Ancestor Map</h1>
-		<form onsubmit="return false">
-			<label for="address">Ancestor's Address:</label>
-			<input type="text" id="address" name="address" placeholder="Enter ancestor's address">
+  <div class="container">
+    <h1>Ancestor Map</h1>
+    <form>
+      <label for="address">Ancestor's Address:</label>
+      <input type="text" id="address" name="address" placeholder="Enter ancestor's address">
 
-			<label for="date">Date:</label>
-			<input type="text" id="date" name="date" placeholder="Enter date">
+      <label for="date">Date:</label>
+      <input type="text" id="date" name="date" placeholder="Enter date">
 
-			<button type="button" onclick="geocode()">Map It!</button>
-		</form>
-	</div>
-	<div id="map"></div>
+      <button type="submit">Map It!</button>
+    </form>
+  </div>
+  <div id="map"></div>
 </body>
 </html>
- 
